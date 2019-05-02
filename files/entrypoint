@@ -53,6 +53,9 @@ if [ ! -f "$userConfFinalPath" ]; then
         done
     fi
 
+    # as required for sshd_config to config chroot
+    groupadd sftp_user_group
+
     # Check that we have users in config
     if [ -f "$userConfFinalPath" ] && [ "$(wc -l < "$userConfFinalPath")" -gt 0 ]; then
         # Import users from final conf file
@@ -70,6 +73,14 @@ if [ ! -f "$userConfFinalPath" ]; then
     fi
     if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
         ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''
+    fi
+
+    # If one given, set root user password from environment variable
+    if [ -n "$ROOT_PASWWD" ]; then
+        echo "root:$ROOT_PASWWD" | chpasswd
+        mkdir -p "/home/root"
+        chown root:root "/home/root"
+        chmod 755 "/home/root"
     fi
 fi
 

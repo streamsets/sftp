@@ -8,15 +8,21 @@ HostKey /etc/ssh/ssh_host_rsa_key
 # See: https://github.com/atmoz/sftp/issues/11
 UseDNS no
 
-# Limited access
-PermitRootLogin no
-X11Forwarding no
-AllowTcpForwarding no
+# Allow all access
+PermitRootLogin yes
+X11Forwarding yes
+AllowTcpForwarding yes
 
-# Force sftp and chroot jail
+# Force sftp
 Subsystem sftp internal-sftp
-ForceCommand internal-sftp
-ChrootDirectory %h
+
+# Uncomment below line to disable SSH capability
+#ForceCommand internal-sftp
+
+# chroot jail only for users of sftp_user_group
+Match group sftp_user_group
+    ChrootDirectory %h
 
 # Enable this for more logs
 #LogLevel VERBOSE
+LogLevel INFO

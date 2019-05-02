@@ -66,6 +66,8 @@ if [ -n "$gid" ]; then
 fi
 
 useradd "${useraddOptions[@]}" "$user"
+# as required for sshd_config to config chroot
+usermod -a -G sftp_user_group "$user"
 mkdir -p "/home/$user"
 chown root:root "/home/$user"
 chmod 755 "/home/$user"
